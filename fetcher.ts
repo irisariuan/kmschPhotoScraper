@@ -11,14 +11,15 @@ async function writer(f: Fetchable) {
     }
     console.log(chalk.magenta.bold('Downloading album ' + f.date))
     for (const [name, buf] of await fetcher(f)) {
-        writeFile(dir + '/' + savableName(name), buf, () => {})
+        writeFile(dir + '/' + savableName(name), buf, () => { })
     }
 }
-const link: { links: string[] } = JSON.parse(readFileSync('./link.json', { encoding: 'utf8' }))
+const link: { links: string[] } = { links: JSON.parse(readFileSync('./test.json', { encoding: 'utf8' })) }
+const spinner = createSpinner().start()
 Promise.all(link.links.map(async v => {
-    const spinner = createSpinner().start({text: 'Fetching ' + v})
+    spinner.start({ text: 'Fetching ' + v })
     const f = await createFetchable(v)
-    spinner.success({text: 'Got Photo IDs sucessfully!'})
+    spinner.success({ text: 'Got Photo IDs sucessfully!' })
     process.stdout.moveCursor(0, -1)
     process.stdout.clearScreenDown()
     await writer(f)
