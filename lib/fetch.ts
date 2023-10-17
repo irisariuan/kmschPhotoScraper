@@ -35,9 +35,11 @@ export async function fetcher(f: Fetchable) {
     console.log('Fetching photos...')
     const spinner = createSpinner().start()
     const p: [string, Buffer][] = []
+    let index = 0
     for (const i of f.photoId) {
+        index++
         let link = LINK + f.date + '/' + encodeURIComponent(i).replaceAll('%2B', '%20')
-        spinner.start({text: 'Downloading ' + link})
+        spinner.start({text: `Downloading ${link} [${index}/${f.photoId.length}]`})
         p.push([i, Buffer.from(await ((await fetch(link)).arrayBuffer()))])
     }
     spinner.success({text: 'Done!'})
